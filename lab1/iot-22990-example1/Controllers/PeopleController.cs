@@ -1,4 +1,5 @@
-﻿using iot_22990_example1.Models;
+﻿using iot_22990_example1.Database;
+using iot_22990_example1.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,38 +13,24 @@ namespace iot_22990_example1.Controllers
 
     public class PeopleController : ControllerBase
     {
-        private List<Person> people;
+        private readonly PeopleDbContext db;
 
-        public PeopleController()
+        public PeopleController(PeopleDbContext db)
         {
-            people = new List<Person>()
-            {
-                new Person
-                {
-                FirstName = "Damian",
-                LastName = "Ciszak",
-                Id = 1
-                },
-                new Person
-                {
-                FirstName = "Jan",
-                LastName = "Nowak",
-                Id = 2
-                }
-            };
+            this.db = db;
         }
 
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(people);
+            return Ok(db.People.ToList());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get([FromRoute]int id)
         {
-            var person = people.FirstOrDefault(w => w.Id == id);
+            var person = db.People.FirstOrDefault(w => w.Id == id);
 
             if(person == null)
             {
@@ -53,6 +40,13 @@ namespace iot_22990_example1.Controllers
             return Ok(person);
         }
 
+        [HttpPost]
+        public IActionResult Create([FromBody]Person person)
+        {
+            db.People.Add(person);
+            db.SaveChanges();
+            return Ok(person.Id);
+        }
 
     }
 }
