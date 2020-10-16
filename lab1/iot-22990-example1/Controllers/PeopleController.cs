@@ -39,5 +39,20 @@ namespace iot_22990_example1.Controllers
         {
             return Ok(people);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get([FromRoute]int id)
+        {
+            var person = people.FirstOrDefault(w => w.Id == id);
+
+            if(person == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(person);
+        }
+
+
     }
 }
