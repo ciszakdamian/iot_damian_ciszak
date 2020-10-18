@@ -48,5 +48,25 @@ namespace iot_22990_example1.Controllers
             return Ok(person.Id);
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+
+            var person = db.People.Find(id);
+            db.Remove(person);
+            db.SaveChanges();
+
+            return Ok("Remove");
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] Person person)
+        {
+            db.Update(person);
+            db.SaveChanges();
+            return Ok(person.Id);
+        }
+
+
     }
 }
